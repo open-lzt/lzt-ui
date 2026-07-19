@@ -137,35 +137,21 @@
 }
 
 /* -------------------------------------------------------------- fonts */
-/* Drop Inter woff2 files into ./fonts/ — self-hosted, never a CDN import. */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('./fonts/Inter-Regular.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('./fonts/Inter-Medium.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('./fonts/Inter-SemiBold.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('./fonts/Inter-Bold.woff2') format('woff2');
-}
+/* THE CONSUMER SUPPLIES INTER. This file deliberately declares no @font-face.
+
+   It used to declare four, pointing at ./fonts/Inter-*.woff2 — files that were never added to the
+   repo, so every page loading this stylesheet fired four requests that 404'd and then fell back to
+   the next family in the stack anyway. A design system shipping guaranteed failed requests is worse
+   than one that asks for the face it wants and says so.
+
+   Self-host it (never a CDN @import — that is a render-blocking third-party dependency on every
+   page). The npm route, which is what auto-lzt/frontend uses:
+
+       npm i @fontsource/inter
+       import '@fontsource/inter/400.css';   // 500 / 600 / 700 as needed
+
+   Without it --lzt-font degrades through 'Open Sans' / 'Segoe UI' / system-ui, which is a legible
+   page rather than a broken one. */
 
 /* -------------------------------------------------------------- reset */
 *,
