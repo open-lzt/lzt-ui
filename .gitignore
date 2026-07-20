@@ -1,4 +1,9 @@
 node_modules/
-dist/
 *.tsbuildinfo
+
+# dist/ is deliberately NOT ignored. This package is consumed straight from git, and a package
+# manager installs that as a downloaded tarball rather than a clone — which means the `prepare`
+# script that builds dist/ never runs, and a consumer gets a package whose every export is missing.
+# Committing the build output is what makes `"@open-lzt/ui": "github:open-lzt/lzt-ui"` work at all.
+# Rebuild it (`npm run build`) in the same commit as any source change.
 __pycache__/
