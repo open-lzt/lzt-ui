@@ -1,3 +1,5 @@
+<p align="right"><a href="README.en.md">English</a> · <b>Русский</b></p>
+
 # lzt-ui
 
 Дизайн-система экосистемы [open-lzt](https://github.com/open-lzt/open-lzt): CSS-кит, набор иконок и React-биндинги. Тёмная тема по умолчанию.
