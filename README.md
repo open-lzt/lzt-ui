@@ -1,149 +1,130 @@
 # lzt-ui
 
-Библиотека заготовок в визуальном языке LZT. Чистый CSS + 150 строк ванильного JS.
-Без сборки, без зависимостей, без утилити-фреймворка.
+Дизайн-система экосистемы [open-lzt](https://github.com/open-lzt/open-lzt): CSS-кит, набор иконок и React-биндинги. Тёмная тема по умолчанию.
 
-Два способа потребления — один и тот же CSS:
+Ванильный HTML — без сборки:
 
 ```html
-<!-- обычный HTML -->
 <link rel="stylesheet" href="lzt-ui.css">
 <script src="lzt-icons.js"></script>
 <script src="lzt-ui.js"></script>
+
+<button class="lzt-btn lzt-btn--primary">Сохранить</button>
+<svg class="lzt-icon"><use href="#i-search"/></svg>
 ```
+
+React:
 
 ```tsx
-// React — см. react/README.md
 import '@open-lzt/ui/lzt-ui.css';
-import { Button, Thread, ThemeProvider } from '@open-lzt/ui';
+import { Button, Icon, ThemeProvider } from '@open-lzt/ui';
+
+export function App() {
+  return (
+    <ThemeProvider>
+      <Button variant="primary">Сохранить</Button>
+      <Icon name="search" />
+    </ThemeProvider>
+  );
+}
 ```
 
-`react/` реализует поведение на хуках и **не** подключает `lzt-ui.js` — тот остаётся
-для тех, кто пишет на голой разметке. Классы и токены общие, расхождений нет.
+## Установка
 
-Тёмная тема по умолчанию. Светлая — `<html data-theme="light">` или кнопка с
-`data-lzt-theme-toggle` (выбор сохраняется в `localStorage`).
+**Пакет не опубликован в npm-реестре** — `npm install @open-lzt/ui` вернёт 404. Ставится из git:
 
-## Демо
+```bash
+npm install github:open-lzt/lzt-ui react react-dom
+```
 
-| Файл | Что показывает |
+```json
+{
+  "dependencies": {
+    "@open-lzt/ui": "github:open-lzt/lzt-ui",
+    "react": "^18",
+    "react-dom": "^18"
+  }
+}
+```
+
+`react` и `react-dom` версии 18+ — peer-зависимости, их ставите вы. Собранный `dist/` закоммичен намеренно: npm не запускает `prepare` при установке из tarball, и без него потребитель получил бы пустые экспорты.
+
+## Что в пакете
+
+| Импорт | Что даёт |
 |---|---|
-| `demo/index.html` | галерея всех компонентов и токенов |
-| `demo/forum.html` | индекс форума — список тем, сайдбар, фильтры, модалка |
-| `demo/thread.html` | страница темы — посты, цитаты, спойлеры, реакции |
+| `@open-lzt/ui` | React-компоненты, типы, `ThemeProvider` |
+| `@open-lzt/ui/lzt-ui.css` | вся стилевая база, токены и классы |
+| `@open-lzt/ui/lzt-ui.js` | поведение для ванильного HTML через `data-lzt-*` |
+| `@open-lzt/ui/lzt-icons.js` | инъекция SVG-спрайта иконок |
 
-Открываются двойным кликом, сервер не нужен.
+Спрайт именно инъектируется, а не лежит внешним файлом: `<use href="file.svg#id">` режется CORS на `file://` и на другом домене, и иконки молча не рисуются.
 
-## Язык дизайна
+## React-компоненты
 
-Палитра и приёмы сведены из двух источников — публичного стиля форума и
-[Lolzteam-Launcher](https://github.com/iamextasy/Lolzteam-Launcher) (Electron + React).
-Они сходятся на одном ядре, расходятся в мелочах:
+| Группа | Компоненты |
+|---|---|
+| Каркас | `Shell` `Container` `Main` `Stack` `Grid` `Spacer` `Divider` · `Row` (`between?`, `wrap?`) |
+| Кнопки | `Button` (`variant`: `default` \| `primary` \| `danger` \| `outline` \| `ghost` \| `gradient`; `size`: `sm` \| `md` \| `lg`; `icon?` `block?` `loading?`) · `ButtonGroup` |
+| Иконка | `Icon` (`name` — без префикса `i-`, `size?`) |
+| Формы | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Select` `Search` · `Checkbox` `Switch` (`label?`) |
+| Данные | `Block` `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` |
+| Навигация | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) · `Pagenav` (`page`, `count`, `onChange`) |
+| Фидбек | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Skeleton` |
+| Тосты | `ToastProvider` · `useToast()` → `toast(msg, { tone })` |
+| Форум | `Thread` (`unread?`) `ThreadMain` `ThreadTitle` `Post` `PostContent` `Spoiler` `Reactions` `Reaction` |
 
-| | Форум | Launcher | Взято в библиотеку |
-|---|---|---|---|
-| Акцент | `#00ba78` | `#00ba78` | `#00ba78` |
-| Фон страницы | `rgb(20,20,20)` | тот же | `#0f0f10` (темнее оригинала) |
-| Поверхности | 28 / 36 / 48 / 54 | те же | ровные ступени ~8 пунктов |
-| Шрифт | Open Sans | Inter | Inter, Open Sans в fallback |
-| Радиусы | 10 / 6 / 8 px | 10 / 12 / 6 | 4 / 6 / 10 / 14 / pill |
-| Motion | `.1s–.2s ease-in-out` | `120ms cubic-bezier(.16,1,.3,1)` | оба: `--lzt-fast` + `--lzt-ease` |
-| Иконки | шрифтовой сет | inline SVG | inline SVG, `currentColor` |
+Тема: `ThemeProvider` (`defaultTheme` по умолчанию `dark`), хук `useTheme()` → `{ theme, setTheme, toggle }`, готовая кнопка `ThemeToggle`. Выбор запоминается, светлая включается атрибутом `data-theme="light"` на `<html>`.
 
-Что осознанно **не** перенесено: 95 keyframes-анимаций общего назначения
-(bounce/flip/rollIn и прочий animate.css), радужный текст на каждом втором нике,
-z-index до 50000. Оставлены только приёмы, которые действительно делают вид:
+## Ванильные хуки
 
-- **глубина хайрлайнами, а не тенями** — `box-shadow: 0 0 0 1px inset rgba(255,255,255,.12)`;
-  тени только у всплывающего (меню, модалка, тост);
-- **рипл на кнопке** — радиальный градиент, растянутый на 15000% и схлопываемый на `:active`;
-- **активная вкладка** — `inset 0 -2px 0 0` акцентом, без border-bottom-скачков;
-- **скелетон** — бегущий блик `--lzt-grad-sheen`, а не мигание прозрачностью;
-- **фирменный градиент** — `88deg, #1c6946 → #329c6c → #1d8254` в шапке и прогрессе,
-  анимированная версия `--lzt-grad-flow` для «идёт работа».
+`lzt-ui.js` навешивает поведение по атрибутам — своего JS писать не нужно.
 
-Один акцент на экран. Серая шкала несёт ~95% интерфейса.
+| Атрибут | Что делает |
+|---|---|
+| `data-lzt-tabs` | переключение вкладок |
+| `data-lzt-dropdown` | выпадающее меню |
+| `data-lzt-open` / `data-lzt-close` | открыть и закрыть модалку |
+| `data-lzt-panel` / `data-lzt-panel-group` | раскрывающиеся панели, группа с аккордеоном |
+| `data-lzt-theme-toggle` | переключатель темы |
+| `data-lzt-toast` / `data-lzt-toast-variant` | показать тост и его тон |
 
 ## Иконки
 
-67 линейных иконок в одном сете: сетка 24, обводка 2px, скруглённые концы,
-`currentColor`. Живут в `lzt-icons.js` и инжектятся спрайтом в документ.
+67 штук, сетка 24×24, обводка 2px, скруглённые концы, цвет наследуется через `currentColor`. Не подмешивайте залитые глифы — оптический вес поедет.
 
 ```html
 <svg class="lzt-icon"><use href="#i-search"/></svg>
 <svg class="lzt-icon lzt-icon--lg"><use href="#i-bell"/></svg>
 ```
 
-Спрайт инжектится скриптом, а не лежит внешним `.svg`, потому что
-`<use href="file.svg#id">` режется CORS на `file://` и с другого домена —
-внешний спрайт молча не отрисовался бы. Галерея всех имён — в `demo/index.html`,
-она строится из самого спрайта и не может разойтись с ним.
+<details>
+<summary>Все имена</summary>
 
-## Компоненты
+`alert` `arrow-down` `arrow-left` `arrow-right` `arrow-up` `bell` `bookmark` `bot` `calendar` `chart` `check` `chevron-down` `chevron-left` `chevron-right` `chevron-up` `clock` `code` `copy` `download` `edit` `external` `eye` `filter` `flame` `folder` `grid` `heart` `home` `image` `inbox` `info` `link` `list` `lock` `logout` `menu` `message` `messages` `minus` `moon` `more-h` `more-v` `package` `pin` `plus` `quote` `refresh` `reply` `search` `send` `settings` `share` `shield` `sliders` `sort` `star` `sun` `tag` `terminal` `trash` `unlock` `upload` `user` `users` `wallet` `x` `zap`
 
-**Каркас** — `lzt-shell`, `lzt-container`, `lzt-main`, `lzt-stack`, `lzt-row`,
-`lzt-grid`, `lzt-divider`, `lzt-spacer`
-**Навигация** — `lzt-topbar`, `lzt-logo`, `lzt-tabs`, `lzt-sidenav`,
-`lzt-breadcrumb`, `lzt-pagenav`, `lzt-segmented`
-**Действия** — `lzt-btn` (`--primary --danger --outline --ghost --gradient`,
-`--sm --lg --icon --block`, `is-loading`), `lzt-btn-group`
-**Формы** — `lzt-field`, `lzt-input`, `lzt-textarea`, `lzt-select`, `lzt-search`,
-`lzt-check`, `lzt-switch`, `lzt-label`, `lzt-hint`
-**Контейнеры** — `lzt-block` (+`__header __body __footer`), `lzt-card`, `lzt-stat`
-**Данные** — `lzt-table`, `lzt-thread`, `lzt-post`, `lzt-quote`, `lzt-code`,
-`lzt-spoiler`, `lzt-reactions`
-**Метки** — `lzt-badge`, `lzt-tag`, `lzt-chip`, `lzt-avatar`
-**Обратная связь** — `lzt-alert`, `lzt-toast`, `lzt-modal`, `lzt-menu`, `lzt-tip`,
-`lzt-progress`, `lzt-loaderbar`, `lzt-spinner`, `lzt-dots`, `lzt-skeleton`, `lzt-empty`
-**Эффекты** — `lzt-gradient-text`, `lzt-glow`, `lzt-enter`, `lzt-stagger`
+</details>
 
-## JS-хуки
+Живая галерея — `demo/index.html`, открывается файлом, сервер не нужен.
 
-Обработчики делегированные — размеченное позже работает без переинициализации.
-
-| Атрибут | Действие |
-|---|---|
-| `data-lzt-theme-toggle` | переключить тему |
-| `data-lzt-open="id"` | открыть `.lzt-overlay#id` |
-| `data-lzt-close` | закрыть текущий оверлей |
-| `data-lzt-dropdown` | раскрыть меню (остальные закрываются) |
-| `data-lzt-toast="текст"` | показать тост, `data-lzt-toast-variant="danger\|warning"` |
-| `data-lzt-tabs` / `data-lzt-panel` | вкладки и панели |
-
-Программно: `lzt.toast(msg, variant)`, `lzt.openModal(id)`, `lzt.setTheme('light')`.
-
-`Esc` закрывает модалки и меню. `prefers-reduced-motion` уважается.
-
-## Шрифты
-
-`lzt-ui.css` ждёт self-hosted Inter в `./fonts/` (`Inter-Regular.woff2`,
-`-Medium`, `-SemiBold`, `-Bold`). Без них подхватится системный fallback —
-вид останется рабочим, но метрики поедут. CDN-импорты не используются намеренно.
-
-## Проверка
+## Разработка
 
 ```bash
-python check.py
+npm run build       # tsup → dist/
+npm run typecheck   # tsc --noEmit
+python check.py     # проверка CSS и HTML-демо
 ```
 
-Ловит несбалансированные блоки, классы в демо без определения в CSS,
-`var()` без объявления, `<use>` без `<symbol>`, битые цели модалок.
+`check.py` сверяет: баланс блоков в CSS, что каждый использованный класс `lzt-*` объявлен, что каждый `var()` резолвится, что каждый `<use href="#i-*">` есть в спрайте, что цели модалок существуют и что в разметке нет отступов вне шкалы.
 
-## Правила, которые держат вид
+Юнит-тестов, линтера JS и CI в репозитории нет — `check.py` и `typecheck` и есть весь гейт.
 
-Три из них нарушить проще всего, поэтому они записаны:
+Шрифты не приложены: базовое начертание — системное, пока вы не подключите своё.
 
-1. **Один акцент на экран.** Зелёный — только у главного действия и активного
-   пункта навигации. Прогресс-бары, бейджи, закреплённые темы по умолчанию
-   нейтральные; акцент включается явно (`lzt-progress--brand`).
-2. **Разделять чем-то одним.** Либо заливка, либо волосяная линия, либо воздух —
-   никогда двумя сразу. Тени только у всплывающих слоёв.
-3. **Никаких пикселей в разметке.** Отступы берутся из шкалы (`lzt-g3`, `lzt-mt4`),
-   `check.py` валит сборку на инлайн-`gap`/`margin`/`padding`.
+## Экосистема
 
-## Статус
+[auto-lzt](https://github.com/open-lzt/auto-lzt) — панель, которая на этом собрана · [весь стенд](https://github.com/open-lzt/open-lzt)
 
-Заготовка под идею «UI-кит экосистемы»: тот же кит должен стать host-китом
-панели (`TaskCard`, `Countdown`, `LimitBar`, `AccountPicker`), чтобы плагины
-получали полировку даром. Сейчас это CSS-слой; React-обёртки и Storybook —
-следующий шаг, когда появится второй реальный потребитель.
+## Лицензия
+
+[MIT](LICENSE)
