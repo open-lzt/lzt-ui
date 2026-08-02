@@ -6,8 +6,11 @@ behaviour is React state/hooks (it does **not** load `lzt-ui.js`).
 
 ## Install
 
+The package is **not** published to npm — `npm install @open-lzt/ui` returns 404.
+Install straight from git:
+
 ```bash
-npm install @open-lzt/ui react react-dom
+npm install github:open-lzt/lzt-ui react react-dom
 ```
 
 ```tsx
