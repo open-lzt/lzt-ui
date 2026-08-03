@@ -11,9 +11,7 @@ export interface ModalProps extends Omit<ComponentPropsWithoutRef<'div'>, 'title
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
-/** Popovers (Select, DatePicker) render into document.body, so they sit OUTSIDE the modal subtree
- * even while visually on top of it. Without them the trap sends Tab back to the modal's first
- * element and the open list becomes unreachable. */
+/** Popovers portal into body, so they sit outside the modal subtree the trap walks. */
 const PORTAL_ROOT_SELECTOR = '[data-lzt-portal-root]';
 
 function focusableWithin(root: ParentNode | null): HTMLElement[] {

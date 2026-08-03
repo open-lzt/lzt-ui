@@ -1,16 +1,6 @@
-/* =========================================================================
-   lzt-ui — component library in the LZT visual language
-   Plain CSS custom properties. No build step, no framework, no utilities.
-   Dark is the default; add data-theme="light" on <html> to flip.
+/* Depth rule: in-flow surfaces use fill + hairline; drop shadows are for floating layers only. */
 
-   Depth rule: in-flow surfaces separate by fill + a 1px inset hairline.
-   Drop shadows belong ONLY to floating layers (menu, modal, toast, tooltip).
-   Never both on the same element.
-   ========================================================================= */
-
-/* -------------------------------------------------------------- tokens */
 :root {
-  /* brand */
   --lzt-brand: #00ba78;
   --lzt-brand-hi: #0acc9e;
   --lzt-brand-mid: #228e5d;
@@ -19,21 +9,18 @@
   --lzt-brand-a20: rgba(0, 186, 120, 0.20);
   --lzt-brand-a35: rgba(0, 186, 120, 0.35);
 
-  /* surfaces — even ~8-point steps so each level reads as a distinct plane */
   --lzt-bg: #0f0f10;
   --lzt-surface: #17181a;
   --lzt-raised: #1f2023;
   --lzt-overlay: #2a2b2f;
   --lzt-elevated: #35373c;
 
-  /* text — four steps with real luminance gaps between each */
   --lzt-text: #f2f2f3;
   --lzt-text-soft: #b8babd;
   --lzt-text-muted: #86888d;
   --lzt-text-dim: #5e6166;
   --lzt-text-on-brand: #04231a;
 
-  /* hairlines — resting surfaces sit at `ring`, emphasis states at `ring-mid` */
   --lzt-border: rgba(255, 255, 255, 0.06);
   --lzt-border-mid: rgba(255, 255, 255, 0.13);
   --lzt-border-strong: rgba(255, 255, 255, 0.20);
@@ -41,7 +28,6 @@
   --lzt-ring-mid: 0 0 0 1px inset rgba(255, 255, 255, 0.13);
   --lzt-hover-wash: rgba(255, 255, 255, 0.03);
 
-  /* semantic */
   --lzt-danger: #ea4c4c;
   --lzt-danger-hi: #f16060;
   --lzt-warning: #e68c17;
@@ -49,24 +35,20 @@
   --lzt-info: #2394bc;
   --lzt-success: var(--lzt-brand);
 
-  /* signature gradients */
   --lzt-grad-brand: linear-gradient(88deg, #1c6946 0.29%, #329c6c 51.58%, #1d8254 100%);
   --lzt-grad-flow: linear-gradient(270deg, #075e3e, #0dbb7d, #08593c, #09895b);
   --lzt-grad-sheen: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 
-  /* radius — bound to control height, not to component identity */
   --lzt-r-xs: 4px;
   --lzt-r-sm: 6px;
   --lzt-r-md: 10px;
   --lzt-r-lg: 14px;
   --lzt-r-pill: 999px;
 
-  /* control heights — three steps, nothing improvises off-ladder */
   --lzt-h-xs: 20px;
   --lzt-h-sm: 28px;
   --lzt-h-md: 36px;
 
-  /* spacing — 4px grid */
   --lzt-s1: 4px;
   --lzt-s2: 8px;
   --lzt-s3: 12px;
@@ -76,7 +58,6 @@
   --lzt-s8: 32px;
   --lzt-s10: 40px;
 
-  /* type */
   --lzt-font: 'Inter', 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --lzt-font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
   --lzt-fs-xs: 12px;
@@ -87,13 +68,11 @@
   --lzt-fs-xl: 28px;
   --lzt-fs-2xl: 40px;
 
-  /* elevation — floating layers only */
   --lzt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --lzt-shadow-md: 0 5px 12px rgba(0, 0, 0, 0.30);
   --lzt-shadow-lg: 0 5px 26px rgba(0, 0, 0, 0.40);
   --lzt-shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.60);
 
-  /* motion */
   --lzt-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --lzt-ease-io: cubic-bezier(0.65, 0, 0.35, 1);
   --lzt-ease-pop: cubic-bezier(0.5, 0, 0, 1.25);
@@ -101,14 +80,12 @@
   --lzt-base: 180ms;
   --lzt-slow: 260ms;
 
-  /* layers */
   --lzt-z-sticky: 10;
   --lzt-z-dropdown: 100;
   --lzt-z-overlay: 900;
   --lzt-z-modal: 1000;
   --lzt-z-toast: 2000;
 
-  /* layout */
   --lzt-sidebar: 240px;
   --lzt-topbar: 56px;
   --lzt-max: 1180px;
@@ -130,30 +107,13 @@
   --lzt-ring: 0 0 0 1px inset rgba(16, 24, 40, 0.09);
   --lzt-ring-mid: 0 0 0 1px inset rgba(16, 24, 40, 0.16);
   --lzt-hover-wash: rgba(16, 24, 40, 0.04);
-  /* light-mode elevation is fill-neutral, so floating layers lean on shadow */
   --lzt-shadow-md: 0 4px 14px rgba(16, 24, 40, 0.10), 0 1px 3px rgba(16, 24, 40, 0.06);
   --lzt-shadow-lg: 0 10px 30px rgba(16, 24, 40, 0.14), 0 2px 6px rgba(16, 24, 40, 0.06);
   --lzt-shadow-xl: 0 18px 44px rgba(16, 24, 40, 0.18), 0 3px 8px rgba(16, 24, 40, 0.07);
 }
 
-/* -------------------------------------------------------------- fonts */
-/* THE CONSUMER SUPPLIES INTER. This file deliberately declares no @font-face.
+/* Consumer supplies Inter (e.g. `@fontsource/inter`) — no @font-face here, it degrades to Open Sans/system-ui otherwise. */
 
-   It used to declare four, pointing at ./fonts/Inter-*.woff2 — files that were never added to the
-   repo, so every page loading this stylesheet fired four requests that 404'd and then fell back to
-   the next family in the stack anyway. A design system shipping guaranteed failed requests is worse
-   than one that asks for the face it wants and says so.
-
-   Self-host it (never a CDN @import — that is a render-blocking third-party dependency on every
-   page). The npm route, which is what auto-lzt/frontend uses:
-
-       npm i @fontsource/inter
-       import '@fontsource/inter/400.css';   // 500 / 600 / 700 as needed
-
-   Without it --lzt-font degrades through 'Open Sans' / 'Segoe UI' / system-ui, which is a legible
-   page rather than a broken one. */
-
-/* -------------------------------------------------------------- reset */
 *,
 *::before,
 *::after {
@@ -185,7 +145,6 @@ h1, h2, h3, h4 {
   font-weight: 600;
 }
 
-/* tracking tightens as size grows — one global value would be wrong at both ends */
 h1 { font-size: var(--lzt-fs-2xl); line-height: 1.05; letter-spacing: -0.03em; }
 h2 { font-size: var(--lzt-fs-xl); line-height: 1.1; letter-spacing: -0.022em; }
 h3 { font-size: var(--lzt-fs-lg); line-height: 1.2; letter-spacing: -0.014em; }
@@ -249,7 +208,6 @@ code, pre, kbd {
   background-clip: content-box;
 }
 
-/* -------------------------------------------------------------- icons */
 .lzt-icon {
   width: 16px;
   height: 16px;
@@ -261,7 +219,6 @@ code, pre, kbd {
 .lzt-icon--lg { width: 20px; height: 20px; }
 .lzt-icon--xl { width: 24px; height: 24px; }
 
-/* -------------------------------------------------------------- layout */
 .lzt-shell {
   display: flex;
   flex-direction: column;
@@ -301,7 +258,6 @@ code, pre, kbd {
 .lzt-row--wrap { flex-wrap: wrap; }
 .lzt-row--top { align-items: flex-start; }
 
-/* gap + margin utilities exist so markup never hand-rolls off-scale pixels */
 .lzt-g1 { gap: var(--lzt-s1); }
 .lzt-g2 { gap: var(--lzt-s2); }
 .lzt-g3 { gap: var(--lzt-s3); }
@@ -328,7 +284,6 @@ code, pre, kbd {
   margin: var(--lzt-s4) 0;
 }
 
-/* the one heading zone per page — everything after it recedes */
 .lzt-page-head {
   display: flex;
   align-items: flex-end;
@@ -344,7 +299,6 @@ code, pre, kbd {
   margin-top: var(--lzt-s1);
 }
 
-/* -------------------------------------------------------------- topbar */
 .lzt-topbar {
   position: sticky;
   top: 0;
@@ -388,7 +342,6 @@ code, pre, kbd {
   font-weight: 800;
 }
 
-/* -------------------------------------------------------------- nav tabs */
 .lzt-tabs {
   display: flex;
   gap: var(--lzt-s1);
@@ -424,7 +377,6 @@ code, pre, kbd {
   box-shadow: inset 0 -2px 0 0 var(--lzt-brand);
 }
 
-/* -------------------------------------------------------------- sidebar */
 .lzt-sidenav {
   display: flex;
   flex-direction: column;
@@ -457,7 +409,6 @@ code, pre, kbd {
   color: var(--lzt-text);
 }
 
-/* active nav is marked by a rail, not a green fill — the accent stays scarce */
 .lzt-sidenav__item.is-active {
   background: var(--lzt-raised);
   color: var(--lzt-text);
@@ -465,8 +416,7 @@ code, pre, kbd {
   box-shadow: inset 2px 0 0 0 var(--lzt-brand);
 }
 
-/* the same nav item reused horizontally in the topbar: the left rail reads as a
-   stray line there, so the active state falls back to fill + weight alone */
+/* reused horizontally in the topbar — the left rail reads as a stray line there. */
 .lzt-topbar .lzt-sidenav__item.is-active {
   box-shadow: none;
 }
@@ -478,7 +428,6 @@ code, pre, kbd {
   font-variant-numeric: tabular-nums;
 }
 
-/* -------------------------------------------------------------- button */
 .lzt-btn {
   --btn-bg: var(--lzt-overlay);
   --btn-fg: var(--lzt-text);
@@ -498,9 +447,7 @@ code, pre, kbd {
   user-select: none;
   white-space: nowrap;
   box-shadow: var(--lzt-ring);
-  /* the ripple: a 15000%-scaled radial gradient collapsed to 100% on press,
-     then eased back out on release — background-size MUST stay in the
-     transition list or the whole effect is dead code */
+  /* background-size must stay in the transition list below or the ripple is dead code. */
   background: var(--btn-bg) radial-gradient(circle, transparent 1%, var(--btn-bg) 1%) center / 15000%;
   transition: background-color var(--lzt-fast) var(--lzt-ease),
     background-size 640ms var(--lzt-ease),
@@ -509,7 +456,6 @@ code, pre, kbd {
     box-shadow var(--lzt-fast) var(--lzt-ease);
 }
 
-/* hover shifts the fill token itself — brightness() washed out labels and icons */
 .lzt-btn:hover { --btn-bg: var(--lzt-elevated); }
 
 .lzt-btn:active {
@@ -639,7 +585,6 @@ code, pre, kbd {
   margin-left: 1px;
 }
 
-/* -------------------------------------------------------------- segmented */
 .lzt-segmented {
   display: inline-flex;
   padding: 3px;
@@ -670,7 +615,6 @@ code, pre, kbd {
   color: var(--lzt-text);
 }
 
-/* -------------------------------------------------------------- form */
 .lzt-field {
   display: flex;
   flex-direction: column;
@@ -784,7 +728,6 @@ code, pre, kbd {
   display: flex;
 }
 
-/* checkbox / radio */
 .lzt-check {
   display: inline-flex;
   align-items: center;
@@ -849,7 +792,6 @@ code, pre, kbd {
   transform: scale(1);
 }
 
-/* switch */
 .lzt-switch {
   display: inline-flex;
   align-items: center;
@@ -886,7 +828,6 @@ code, pre, kbd {
     width var(--lzt-fast) var(--lzt-ease);
 }
 
-/* the thumb stretches under the finger, then snaps — a physical toggle tell */
 .lzt-switch input:active::after { width: 21px; }
 
 .lzt-switch input:checked {
@@ -901,7 +842,6 @@ code, pre, kbd {
 
 .lzt-switch input:checked:active::after { transform: translateX(11px); }
 
-/* -------------------------------------------------------------- block/card */
 .lzt-block {
   background: var(--lzt-surface);
   border-radius: var(--lzt-r-md);
@@ -909,7 +849,6 @@ code, pre, kbd {
   overflow: hidden;
 }
 
-/* header separates by space + type rank, not by a fill AND a hairline */
 .lzt-block__header {
   display: flex;
   align-items: center;
@@ -953,7 +892,6 @@ code, pre, kbd {
   transition-timing-function: var(--lzt-ease);
 }
 
-/* -------------------------------------------------------------- stat tile */
 .lzt-stat {
   background: var(--lzt-surface);
   border-radius: var(--lzt-r-md);
@@ -988,7 +926,6 @@ code, pre, kbd {
 .lzt-stat__delta--up { color: var(--lzt-brand); }
 .lzt-stat__delta--down { color: var(--lzt-danger); }
 
-/* -------------------------------------------------------------- badge/tag */
 .lzt-badge {
   display: inline-flex;
   align-items: center;
@@ -1008,7 +945,6 @@ code, pre, kbd {
 .lzt-badge--danger { background: rgba(234, 76, 76, 0.16); color: #f5837f; }
 .lzt-badge--warning { background: rgba(230, 140, 23, 0.16); color: #e9a44e; }
 .lzt-badge--info { background: rgba(35, 148, 188, 0.16); color: #62b4d3; }
-/* premium reads as "different", not as a second accent competing with brand */
 .lzt-badge--premium { background: rgba(214, 88, 194, 0.16); color: #d99fd0; }
 
 .lzt-badge--pill { border-radius: var(--lzt-r-pill); padding: 0 var(--lzt-s3); }
@@ -1070,7 +1006,6 @@ code, pre, kbd {
 
 .lzt-chip__x:hover { opacity: 1; }
 
-/* -------------------------------------------------------------- avatar */
 .lzt-avatar {
   position: relative;
   flex: none;
@@ -1092,7 +1027,6 @@ code, pre, kbd {
   object-fit: cover;
 }
 
-/* radius scales with the box so small and large read as the same shape family */
 .lzt-avatar--sm { width: 26px; height: 26px; font-size: var(--lzt-fs-xs); border-radius: var(--lzt-r-sm); }
 .lzt-avatar--lg { width: 56px; height: 56px; font-size: var(--lzt-fs-lg); border-radius: var(--lzt-r-lg); }
 .lzt-avatar--round { border-radius: var(--lzt-r-pill); }
@@ -1115,7 +1049,6 @@ code, pre, kbd {
 .lzt-avatar__dot--online { background: var(--lzt-brand); }
 .lzt-avatar__dot--busy { background: var(--lzt-danger); }
 
-/* -------------------------------------------------------------- alert */
 .lzt-alert {
   display: flex;
   gap: var(--lzt-s3);
@@ -1146,7 +1079,6 @@ code, pre, kbd {
   margin-bottom: 2px;
 }
 
-/* -------------------------------------------------------------- table */
 .lzt-table {
   width: 100%;
   border-collapse: collapse;
@@ -1191,7 +1123,6 @@ code, pre, kbd {
   overflow-x: auto;
 }
 
-/* -------------------------------------------------------------- thread row */
 .lzt-thread {
   display: flex;
   align-items: center;
@@ -1224,7 +1155,6 @@ code, pre, kbd {
   font-weight: 600;
 }
 
-/* one marker for pinned — a rail, not a tint plus an icon plus a badge */
 .lzt-thread.is-pinned {
   box-shadow: inset 2px 0 0 0 var(--lzt-brand-mid);
 }
@@ -1271,7 +1201,6 @@ code, pre, kbd {
   flex-wrap: wrap;
 }
 
-/* fixed columns so counts land on the same axis across every row */
 .lzt-thread__stats {
   display: grid;
   grid-template-columns: 64px 72px;
@@ -1297,7 +1226,6 @@ code, pre, kbd {
   color: var(--lzt-text-muted);
 }
 
-/* -------------------------------------------------------------- post */
 .lzt-post {
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -1386,7 +1314,6 @@ code, pre, kbd {
   box-shadow: 0 0 0 1px inset var(--lzt-brand-a35);
 }
 
-/* quote + spoiler + code */
 .lzt-quote {
   border-left: 2px solid var(--lzt-brand-mid);
   background: var(--lzt-raised);
@@ -1479,7 +1406,6 @@ code, pre, kbd {
   padding: var(--lzt-s3);
 }
 
-/* reactions */
 .lzt-reactions {
   display: flex;
   gap: var(--lzt-s1);
@@ -1524,7 +1450,6 @@ code, pre, kbd {
   transform: translateY(-2px) scale(1.15);
 }
 
-/* -------------------------------------------------------------- pagination */
 .lzt-pagenav {
   display: flex;
   gap: var(--lzt-s1);
@@ -1567,7 +1492,6 @@ code, pre, kbd {
   padding: 0 var(--lzt-s1);
 }
 
-/* -------------------------------------------------------------- breadcrumb */
 .lzt-breadcrumb {
   display: flex;
   align-items: center;
@@ -1590,7 +1514,6 @@ code, pre, kbd {
   display: flex;
 }
 
-/* -------------------------------------------------------------- dropdown */
 .lzt-dropdown {
   position: relative;
   display: inline-flex;
@@ -1653,7 +1576,6 @@ code, pre, kbd {
   margin: var(--lzt-s1) 0;
 }
 
-/* -------------------------------------------------------------- tooltip */
 .lzt-tip {
   position: relative;
 }
@@ -1684,7 +1606,6 @@ code, pre, kbd {
     transform var(--lzt-base) var(--lzt-ease);
 }
 
-/* -------------------------------------------------------------- modal */
 .lzt-overlay {
   position: fixed;
   inset: 0;
@@ -1744,7 +1665,6 @@ code, pre, kbd {
   border-top: 1px solid var(--lzt-border);
 }
 
-/* -------------------------------------------------------------- toast */
 .lzt-toasts {
   position: fixed;
   right: var(--lzt-s5);
@@ -1786,7 +1706,6 @@ code, pre, kbd {
     margin-bottom var(--lzt-base) var(--lzt-ease-io);
 }
 
-/* -------------------------------------------------------------- progress */
 .lzt-progress {
   height: 6px;
   border-radius: var(--lzt-r-pill);
@@ -1794,7 +1713,6 @@ code, pre, kbd {
   overflow: hidden;
 }
 
-/* neutral by default — the accent is reserved for the one thing that matters */
 .lzt-progress__bar {
   height: 100%;
   border-radius: inherit;
@@ -1830,7 +1748,6 @@ code, pre, kbd {
   animation: lzt-grad-move 2s linear infinite;
 }
 
-/* -------------------------------------------------------------- spinners */
 .lzt-spinner {
   width: 18px;
   height: 18px;
@@ -1858,7 +1775,6 @@ code, pre, kbd {
 .lzt-dots span:nth-child(1) { animation-delay: -0.32s; }
 .lzt-dots span:nth-child(2) { animation-delay: -0.16s; }
 
-/* skeleton — a sweeping shine, not a pulsing block */
 .lzt-skeleton {
   position: relative;
   overflow: hidden;
@@ -1880,7 +1796,6 @@ code, pre, kbd {
 .lzt-skeleton--title { height: 20px; width: 45%; }
 .lzt-skeleton--avatar { width: 40px; height: 40px; border-radius: var(--lzt-r-md); }
 
-/* -------------------------------------------------------------- empty */
 .lzt-empty {
   display: flex;
   flex-direction: column;
@@ -1915,8 +1830,6 @@ code, pre, kbd {
   color: var(--lzt-text-muted);
 }
 
-/* -------------------------------------------------------------- press states */
-/* every clickable surface acknowledges the press, not just .lzt-btn */
 .lzt-sidenav__item,
 .lzt-menu__item,
 .lzt-pagenav__item,
@@ -1943,7 +1856,6 @@ code, pre, kbd {
 
 .lzt-reaction:active { transform: scale(0.94); }
 
-/* -------------------------------------------------------------- text fx */
 .lzt-gradient-text {
   background: var(--lzt-grad-flow);
   background-size: 400% 400%;
@@ -1964,7 +1876,6 @@ code, pre, kbd {
 .lzt-mono { font-family: var(--lzt-font-mono); }
 .lzt-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* enter animations — apply to lists/grids for a staggered reveal */
 .lzt-enter { animation: lzt-view-enter 320ms var(--lzt-ease) both; }
 .lzt-stagger > * { animation: lzt-view-enter 320ms var(--lzt-ease) both; }
 .lzt-stagger > *:nth-child(1) { animation-delay: 0ms; }
@@ -1978,7 +1889,6 @@ code, pre, kbd {
 /* cap the ramp — without this, row 9+ has no delay and lands before row 2 */
 .lzt-stagger > *:nth-child(n+9) { animation-delay: 300ms; }
 
-/* -------------------------------------------------------------- keyframes */
 @keyframes lzt-spin {
   to { transform: rotate(360deg); }
 }
@@ -2022,7 +1932,6 @@ code, pre, kbd {
   40% { transform: scale(1); }
 }
 
-/* -------------------------------------------------------------- responsive */
 @media (max-width: 1024px) {
   .lzt-main {
     grid-template-columns: 1fr;
@@ -2059,4 +1968,329 @@ code, pre, kbd {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.lzt-select-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--lzt-s2);
+  width: 100%;
+  height: var(--lzt-h-md);
+  padding: 0 var(--lzt-s3);
+  font: inherit;
+  text-align: left;
+  color: var(--lzt-text);
+  background: var(--lzt-raised);
+  border: 0;
+  border-radius: var(--lzt-r-md);
+  box-shadow: var(--lzt-ring);
+  cursor: pointer;
+  transition: box-shadow var(--lzt-fast) var(--lzt-ease), background var(--lzt-fast) var(--lzt-ease);
+}
+
+.lzt-select-btn--sm {
+  height: var(--lzt-h-sm);
+  font-size: var(--lzt-fs-sm);
+}
+
+.lzt-select-btn:hover:not(:disabled) {
+  box-shadow: var(--lzt-ring-mid);
+}
+
+.lzt-select-btn:focus-visible,
+.lzt-select-btn.is-open {
+  outline: none;
+  background: var(--lzt-overlay);
+  box-shadow: 0 0 0 1px inset var(--lzt-brand);
+}
+
+.lzt-select-btn--invalid {
+  box-shadow: 0 0 0 1px inset var(--lzt-danger);
+}
+
+.lzt-select-btn:disabled,
+.lzt-select-btn[aria-disabled='true'] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.lzt-select-btn__text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lzt-select-btn__text.is-placeholder {
+  color: var(--lzt-text-muted);
+}
+
+.lzt-select-btn__caret {
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid var(--lzt-text-muted);
+  border-bottom: 1.5px solid var(--lzt-text-muted);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--lzt-fast) var(--lzt-ease);
+}
+
+.lzt-select-btn.is-open .lzt-select-btn__caret {
+  transform: translateY(1px) rotate(225deg);
+}
+
+.lzt-select-pop,
+.lzt-datepop {
+  z-index: 1000;
+  background: var(--lzt-elevated);
+  border-radius: var(--lzt-r-md);
+  box-shadow: var(--lzt-shadow-lg), var(--lzt-ring);
+  overflow: hidden;
+}
+
+.lzt-select-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: var(--lzt-s1);
+}
+
+.lzt-select-opt {
+  display: flex;
+  align-items: center;
+  gap: var(--lzt-s2);
+  padding: 0 var(--lzt-s3);
+  height: var(--lzt-h-sm);
+  border-radius: var(--lzt-r-sm);
+  color: var(--lzt-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.lzt-select-opt.is-active {
+  background: var(--lzt-raised);
+}
+
+.lzt-select-opt.is-selected {
+  color: var(--lzt-brand);
+}
+
+.lzt-select-opt.is-disabled {
+  color: var(--lzt-text-muted);
+  cursor: not-allowed;
+}
+
+.lzt-cal {
+  width: 268px;
+  padding: var(--lzt-s3);
+  user-select: none;
+}
+
+.lzt-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--lzt-s2);
+}
+
+.lzt-cal__month {
+  font-size: var(--lzt-fs-sm);
+  color: var(--lzt-text);
+  text-transform: capitalize;
+}
+
+.lzt-cal__nav {
+  width: 28px;
+  height: 28px;
+  font: inherit;
+  color: var(--lzt-text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--lzt-r-sm);
+  cursor: pointer;
+}
+
+.lzt-cal__nav:hover {
+  color: var(--lzt-text);
+  background: var(--lzt-raised);
+}
+
+.lzt-cal__weekdays,
+.lzt-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.lzt-cal__weekday {
+  padding: var(--lzt-s1) 0;
+  font-size: 11px;
+  text-align: center;
+  color: var(--lzt-text-muted);
+}
+
+.lzt-cal__day {
+  height: 32px;
+  font: inherit;
+  font-size: var(--lzt-fs-sm);
+  color: var(--lzt-text);
+  background: transparent;
+  border: 0;
+  border-radius: var(--lzt-r-sm);
+  cursor: pointer;
+}
+
+.lzt-cal__day:hover:not(:disabled) {
+  background: var(--lzt-raised);
+}
+
+.lzt-cal__day.is-outside {
+  color: var(--lzt-text-muted);
+}
+
+.lzt-cal__day:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Underline, not only colour: colour alone is invisible to a red-green deficiency. */
+.lzt-cal__day.is-today {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lzt-cal__day.is-selected {
+  color: var(--lzt-bg);
+  background: var(--lzt-brand);
+  font-weight: 600;
+}
+
+.lzt-cal__day:focus-visible {
+  outline: 2px solid var(--lzt-brand);
+  outline-offset: -2px;
+}
+
+.lzt-datefield {
+  position: relative;
+}
+
+.lzt-datefield__open {
+  position: absolute;
+  top: 50%;
+  right: var(--lzt-s2);
+  width: 24px;
+  height: 24px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  border-radius: var(--lzt-r-sm);
+  cursor: pointer;
+}
+
+.lzt-datefield__open::before,
+.lzt-datefield__open::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  border: 1.5px solid var(--lzt-text-muted);
+}
+
+.lzt-datefield__open::before {
+  top: 6px;
+  bottom: 5px;
+  border-radius: 3px;
+}
+
+.lzt-datefield__open::after {
+  top: 10px;
+  border-width: 1.5px 0 0;
+}
+
+.lzt-datefield__open:hover::before,
+.lzt-datefield__open:hover::after {
+  border-color: var(--lzt-text);
+}
+
+.lzt-datetime {
+  display: flex;
+  gap: var(--lzt-s2);
+}
+
+.lzt-datetime__time {
+  width: 116px;
+  flex: none;
+}
+
+.lzt-slider {
+  display: flex;
+  align-items: center;
+  gap: var(--lzt-s3);
+}
+
+.lzt-slider__track {
+  position: relative;
+  flex: 1;
+  height: 20px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.lzt-slider__track::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  transform: translateY(-50%);
+  background: var(--lzt-raised);
+  border-radius: var(--lzt-r-pill);
+  box-shadow: var(--lzt-ring);
+}
+
+.lzt-slider__fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  transform: translateY(-50%);
+  background: var(--lzt-brand);
+  border-radius: var(--lzt-r-pill);
+}
+
+.lzt-slider__thumb {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  transform: translateY(-50%);
+  background: var(--lzt-text);
+  border-radius: 50%;
+  box-shadow: var(--lzt-shadow-sm);
+}
+
+.lzt-slider__track:focus-visible {
+  outline: none;
+}
+
+.lzt-slider__track:focus-visible .lzt-slider__thumb {
+  box-shadow: 0 0 0 3px var(--lzt-brand);
+}
+
+.lzt-slider__value {
+  min-width: 56px;
+  font-size: var(--lzt-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--lzt-text);
+  text-align: right;
+}
+
+.lzt-slider__unit {
+  margin-left: 3px;
+  color: var(--lzt-text-muted);
+}
+
+.lzt-slider.is-disabled {
+  opacity: 0.55;
+  pointer-events: none;
 }

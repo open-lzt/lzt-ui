@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { ReactNode, ComponentPropsWithoutRef, ReactElement, MouseEventHandler } from 'react';
+import { ReactNode, ComponentPropsWithoutRef, CSSProperties, ReactElement, MouseEventHandler } from 'react';
 
 type ClassValue = string | number | false | null | undefined;
 /** Joins truthy class fragments with a space. Local stand-in for `clsx` — no new dependency. */
@@ -99,8 +99,6 @@ interface InputProps extends Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
 declare const Input: react.ForwardRefExoticComponent<InputProps & react.RefAttributes<HTMLInputElement>>;
 type TextareaProps = ComponentPropsWithoutRef<'textarea'>;
 declare const Textarea: react.ForwardRefExoticComponent<Omit<react.DetailedHTMLProps<react.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>, "ref"> & react.RefAttributes<HTMLTextAreaElement>>;
-type SelectProps = ComponentPropsWithoutRef<'select'>;
-declare const Select: react.ForwardRefExoticComponent<Omit<react.DetailedHTMLProps<react.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>, "ref"> & react.RefAttributes<HTMLSelectElement>>;
 type SearchProps = ComponentPropsWithoutRef<'input'>;
 declare function Search({ className, ...props }: SearchProps): react.JSX.Element;
 interface CheckboxProps extends ComponentPropsWithoutRef<'input'> {
@@ -115,6 +113,95 @@ interface SwitchProps extends ComponentPropsWithoutRef<'input'> {
     label?: ReactNode;
 }
 declare function Switch({ label, className, ...props }: SwitchProps): react.JSX.Element;
+
+type Placement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
+interface AnchorOptions {
+    placement?: Placement;
+    /** Gap between anchor and popover, px. */
+    offset?: number;
+    /** Popover is at least as wide as the anchor — what a select needs to look like one control. */
+    matchWidth?: boolean;
+}
+interface Anchored<A extends HTMLElement, F extends HTMLElement> {
+    anchorRef: React.RefObject<A>;
+    floatRef: React.RefObject<F>;
+    style: CSSProperties;
+}
+/** Marks a popover as belonging to the kit, so `Modal` can keep it inside its focus trap. */
+declare const PORTAL_ROOT_ATTR = "data-lzt-portal-root";
+/** Positions a popover portalled to `document.body`, in viewport coordinates.
+ *
+ * The rect is re-read every frame, not just on scroll and resize: canvas zoom moves the anchor
+ * through a `transform` and fires neither event.
+ */
+declare function useAnchored<A extends HTMLElement = HTMLElement, F extends HTMLElement = HTMLElement>(open: boolean, opts?: AnchorOptions): Anchored<A, F>;
+
+interface SelectOption {
+    value: string;
+    label: ReactNode;
+    disabled?: boolean;
+}
+interface SelectProps extends Omit<ComponentPropsWithoutRef<'button'>, 'value' | 'onChange' | 'defaultValue'> {
+    options: SelectOption[];
+    value?: string;
+    defaultValue?: string;
+    onChange?: (value: string) => void;
+    placeholder?: string;
+    readOnly?: boolean;
+    required?: boolean;
+    invalid?: boolean;
+    name?: string;
+    size?: 'sm' | 'md';
+}
+/** Own listbox: a native `<select>` hands its open list to the OS, which no CSS reaches. */
+declare const Select: react.ForwardRefExoticComponent<SelectProps & react.RefAttributes<HTMLButtonElement>>;
+
+interface CalendarProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'defaultValue'> {
+    /** ISO 'YYYY-MM-DD'. */
+    value?: string;
+    defaultValue?: string;
+    onChange?: (value: string) => void;
+    min?: string;
+    max?: string;
+    weekStart?: 0 | 1;
+    locale?: string;
+}
+declare function toIso(date: Date): string;
+/** Local, not UTC: `new Date('2026-03-01')` parses as UTC and lands a day early west of Greenwich. */
+declare function fromIso(iso: string | undefined): Date | null;
+declare function Calendar({ value, defaultValue, onChange, min, max, weekStart, locale, className, ...props }: CalendarProps): react.JSX.Element;
+
+interface DatePickerProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'defaultValue'>, Pick<CalendarProps, 'min' | 'max' | 'weekStart' | 'locale'> {
+    value?: string;
+    defaultValue?: string;
+    onChange?: (value: string) => void;
+    placeholder?: string;
+    disabled?: boolean;
+    readOnly?: boolean;
+    required?: boolean;
+    invalid?: boolean;
+    name?: string;
+}
+interface DateTimePickerProps extends DatePickerProps {
+    /** Seconds; 60 keeps the time field at minutes. */
+    step?: number;
+}
+declare function DatePicker({ value, defaultValue, onChange, placeholder, disabled, readOnly, required, invalid, name, min, max, weekStart, locale, className, id, ...props }: DatePickerProps): react.JSX.Element;
+declare function DateTimePicker({ value, defaultValue, onChange, step, ...rest }: DateTimePickerProps): react.JSX.Element;
+
+interface SliderProps extends Omit<ComponentPropsWithoutRef<'div'>, 'onChange' | 'defaultValue'> {
+    value?: number;
+    defaultValue?: number;
+    onChange?: (value: number) => void;
+    min?: number;
+    max?: number;
+    step?: number;
+    unit?: string;
+    disabled?: boolean;
+    readOnly?: boolean;
+    name?: string;
+}
+declare function Slider({ value, defaultValue, onChange, min, max, step, unit, disabled, readOnly, name, className, id, ...props }: SliderProps): react.JSX.Element;
 
 interface BlockProps extends ComponentPropsWithoutRef<'div'> {
     accent?: boolean;
@@ -357,4 +444,4 @@ interface ReactionProps extends ComponentPropsWithoutRef<'button'> {
 }
 declare function Reaction({ mine, className, type, ...props }: ReactionProps): react.JSX.Element;
 
-export { Alert, type AlertProps, type AlertTone, Avatar, type AvatarProps, type AvatarSize, type AvatarStatus, Badge, type BadgeProps, type BadgeTone, Block, BlockBody, type BlockBodyProps, BlockFooter, type BlockFooterProps, BlockHeader, type BlockHeaderProps, type BlockProps, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, ButtonGroup, type ButtonGroupProps, type ButtonProps, type ButtonSize, type ButtonVariant, Card, type CardProps, Checkbox, type CheckboxProps, Chip, type ChipProps, type ClassValue, Code, type CodeProps, Container, type ContainerProps, Divider, type DividerProps, Dots, type DotsProps, Dropdown, type DropdownProps, Empty, type EmptyProps, Field, type FieldProps, Grid, type GridProps, Hint, type HintProps, Icon, type IconProps, Input, type InputProps, Label, type LabelProps, LoaderBar, type LoaderBarProps, Logo, type LogoProps, Main, type MainProps, Menu, MenuItem, type MenuItemProps, type MenuProps, MenuSep, type MenuSepProps, Modal, type ModalProps, Pagenav, type PagenavProps, Post, PostBody, type PostBodyProps, PostContent, type PostContentProps, PostFoot, type PostFootProps, PostHead, type PostHeadProps, PostName, type PostNameProps, type PostProps, PostRole, type PostRoleProps, PostUser, type PostUserProps, PostUserStats, type PostUserStatsProps, Progress, type ProgressProps, Quote, type QuoteProps, Radio, type RadioProps, Reaction, type ReactionProps, Reactions, type ReactionsProps, Row, type RowProps, Search, type SearchProps, Segmented, type SegmentedItem, type SegmentedProps, Select, type SelectProps, Shell, type ShellProps, Sidenav, SidenavItem, type SidenavItemProps, type SidenavProps, Skeleton, type SkeletonProps, type SkeletonVariant, Spacer, type SpacerProps, Spinner, type SpinnerProps, Spoiler, type SpoilerProps, Stack, type StackProps, Stat, type StatProps, Switch, type SwitchProps, type TabItem, Table, type TableProps, Tabs, type TabsProps, Tag, type TagProps, Textarea, type TextareaProps, type Theme, type ThemeContextValue, ThemeProvider, type ThemeProviderProps, ThemeToggle, type ThemeToggleProps, Thread, ThreadMain, type ThreadMainProps, ThreadMeta, type ThreadMetaProps, type ThreadProps, ThreadStat, type ThreadStatProps, ThreadStats, type ThreadStatsProps, ThreadTitle, type ThreadTitleProps, type ToastContextValue, type ToastOptions, ToastProvider, type ToastTone, Tooltip, type TooltipProps, Topbar, type TopbarProps, cx, useTheme, useToast };
+export { Alert, type AlertProps, type AlertTone, type AnchorOptions, type Anchored, Avatar, type AvatarProps, type AvatarSize, type AvatarStatus, Badge, type BadgeProps, type BadgeTone, Block, BlockBody, type BlockBodyProps, BlockFooter, type BlockFooterProps, BlockHeader, type BlockHeaderProps, type BlockProps, Breadcrumb, type BreadcrumbItem, type BreadcrumbProps, Button, ButtonGroup, type ButtonGroupProps, type ButtonProps, type ButtonSize, type ButtonVariant, Calendar, type CalendarProps, Card, type CardProps, Checkbox, type CheckboxProps, Chip, type ChipProps, type ClassValue, Code, type CodeProps, Container, type ContainerProps, DatePicker, type DatePickerProps, DateTimePicker, type DateTimePickerProps, Divider, type DividerProps, Dots, type DotsProps, Dropdown, type DropdownProps, Empty, type EmptyProps, Field, type FieldProps, Grid, type GridProps, Hint, type HintProps, Icon, type IconProps, Input, type InputProps, Label, type LabelProps, LoaderBar, type LoaderBarProps, Logo, type LogoProps, Main, type MainProps, Menu, MenuItem, type MenuItemProps, type MenuProps, MenuSep, type MenuSepProps, Modal, type ModalProps, PORTAL_ROOT_ATTR, Pagenav, type PagenavProps, type Placement, Post, PostBody, type PostBodyProps, PostContent, type PostContentProps, PostFoot, type PostFootProps, PostHead, type PostHeadProps, PostName, type PostNameProps, type PostProps, PostRole, type PostRoleProps, PostUser, type PostUserProps, PostUserStats, type PostUserStatsProps, Progress, type ProgressProps, Quote, type QuoteProps, Radio, type RadioProps, Reaction, type ReactionProps, Reactions, type ReactionsProps, Row, type RowProps, Search, type SearchProps, Segmented, type SegmentedItem, type SegmentedProps, Select, type SelectOption, type SelectProps, Shell, type ShellProps, Sidenav, SidenavItem, type SidenavItemProps, type SidenavProps, Skeleton, type SkeletonProps, type SkeletonVariant, Slider, type SliderProps, Spacer, type SpacerProps, Spinner, type SpinnerProps, Spoiler, type SpoilerProps, Stack, type StackProps, Stat, type StatProps, Switch, type SwitchProps, type TabItem, Table, type TableProps, Tabs, type TabsProps, Tag, type TagProps, Textarea, type TextareaProps, type Theme, type ThemeContextValue, ThemeProvider, type ThemeProviderProps, ThemeToggle, type ThemeToggleProps, Thread, ThreadMain, type ThreadMainProps, ThreadMeta, type ThreadMetaProps, type ThreadProps, ThreadStat, type ThreadStatProps, ThreadStats, type ThreadStatsProps, ThreadTitle, type ThreadTitleProps, type ToastContextValue, type ToastOptions, ToastProvider, type ToastTone, Tooltip, type TooltipProps, Topbar, type TopbarProps, cx, fromIso, toIso, useAnchored, useTheme, useToast };

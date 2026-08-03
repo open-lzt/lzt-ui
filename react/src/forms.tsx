@@ -50,12 +50,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   return <textarea ref={ref} className={cx('lzt-textarea', className)} {...props} />;
 });
 
-export type SelectProps = ComponentPropsWithoutRef<'select'>;
-
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select({ className, ...props }, ref) {
-  return <select ref={ref} className={cx('lzt-select', className)} {...props} />;
-});
-
 export type SearchProps = ComponentPropsWithoutRef<'input'>;
 
 export function Search({ className, ...props }: SearchProps) {

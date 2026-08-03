@@ -73,7 +73,8 @@ npm install github:open-lzt/lzt-ui
 | Каркас | `Shell` `Container` `Main` `Stack` `Grid` `Spacer` `Divider` · `Row` (`between?`, `wrap?`) |
 | Кнопки | `Button` (`variant`: `default` \| `primary` \| `danger` \| `outline` \| `ghost` \| `gradient`; `size`: `sm` \| `md` \| `lg`; `icon?` `block?` `loading?`) · `ButtonGroup` |
 | Иконка | `Icon` (`name` — без префикса `i-`, `size?`) |
-| Формы | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Select` `Search` · `Checkbox` `Switch` (`label?`) |
+| Формы | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Search` · `Checkbox` `Radio` `Switch` (`label?`) |
+| Свои контролы | `Select` (`options`, `value`, `onChange`, `name?`) · `Calendar` `DatePicker` `DateTimePicker` (ISO `YYYY-MM-DD`) · `Slider` (`min` `max` `step` `unit?`) · `useAnchored` — позиционер поповеров |
 | Данные | `Block` `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` |
 | Навигация | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) · `Pagenav` (`page`, `count`, `onChange`) |
 | Фидбек | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Skeleton` |

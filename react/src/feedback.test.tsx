@@ -3,9 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Modal } from './feedback';
 
-/** Popovers (Select, DatePicker) render into document.body, so while a modal is open they sit
- * outside its subtree. The trap and the Escape handler have to know about them, or a dropdown
- * opened inside a modal becomes unreachable and Escape throws the whole form away. */
 function mountPortal(): HTMLElement {
   const portal = document.createElement('div');
   portal.setAttribute('data-lzt-portal-root', '');
