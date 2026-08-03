@@ -1281,13 +1281,15 @@ function trappedNodes(modal) {
 }
 function Modal({ open, onClose, title, footer, className, children, ...props }) {
   const modalRef = (0, import_react10.useRef)(null);
+  const onCloseRef = (0, import_react10.useRef)(onClose);
+  onCloseRef.current = onClose;
   (0, import_react10.useEffect)(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement;
     modalRef.current?.focus();
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key !== "Tab" || !modalRef.current) return;
@@ -1308,7 +1310,7 @@ function Modal({ open, onClose, title, footer, className, children, ...props }) 
       document.removeEventListener("keydown", onKeyDown);
       previouslyFocused?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
   if (!open) return null;
   return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "lzt-overlay is-open", onMouseDown: (e) => e.target === e.currentTarget && onClose(), children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
     "div",

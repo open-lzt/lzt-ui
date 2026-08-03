@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Modal } from './feedback';
@@ -51,6 +52,29 @@ describe('Modal focus trap with portalled popovers', () => {
 
     await userEvent.tab();
     expect(document.activeElement).toBe(screen.getByText('пункт списка'));
+  });
+
+  it('keeps the focus in the field while the parent re-renders on every keystroke', async () => {
+    // `onClose={() => …}` is a new function each render. Held in the dependency list, the trap
+    // effect re-ran per keystroke and yanked the focus back to the dialog — the field could not
+    // be typed into at all. Every other test here passes a stable vi.fn(), which never re-renders.
+    function Host() {
+      const [text, setText] = useState('');
+      return (
+        <Modal open onClose={() => setText('')} title="Настройки">
+          <input aria-label="имя" value={text} onChange={(e) => setText(e.target.value)} />
+        </Modal>
+      );
+    }
+
+    render(<Host />);
+    const field = screen.getByLabelText('имя');
+    field.focus();
+
+    await userEvent.keyboard('аб');
+
+    expect(document.activeElement).toBe(field);
+    expect((field as HTMLInputElement).value).toBe('аб');
   });
 
   it('leaves Escape to an open Select instead of closing the modal under it', async () => {

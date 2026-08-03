@@ -75,7 +75,7 @@ The sprite is injected rather than served as an external file for a reason: `<us
 | Icon | `Icon` (`name` — without the `i-` prefix, `size?`) |
 | Forms | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Search` · `Checkbox` `Radio` `Switch` (`label?`) · `Segmented` (`items`, `value`, `onChange`) |
 | Own controls | `Select` (`options`, `value`, `onChange`, `name?`) · `Calendar` `DatePicker` `DateTimePicker` (ISO `YYYY-MM-DD`) · `Slider` (`min` `max` `step` `unit?`) · `useAnchored` — the popover positioner |
-| Data | `Block` `BlockHeader` `BlockBody` `BlockFooter` · `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` · `Empty` |
+| Data | `Block` `BlockHeader` `BlockBody` `BlockFooter` · `Card` `Stat` · `Table` (plain `thead`/`tbody`/`tr`/`th`/`td` inside) · `Empty` |
 | Status | `Alert` (`tone`) · `Badge` `Tag` `Chip` · `Avatar` (`status?`) · `Tooltip` · `Code` `Quote` |
 | Navigation | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) `MenuSep` · `Pagenav` (`page`, `count`, `onChange`) · `Breadcrumb` · `Topbar` `Sidenav` `SidenavItem` `Logo` |
 | Feedback | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Dots` `LoaderBar` `Skeleton` |
@@ -93,7 +93,7 @@ Theme: `ThemeProvider` (`defaultTheme` defaults to `dark`), the `useTheme()` hoo
 | `data-lzt-tabs` | tab switching |
 | `data-lzt-dropdown` | dropdown menu |
 | `data-lzt-open` / `data-lzt-close` | open and close a modal |
-| `data-lzt-panel` / `data-lzt-panel-group` | collapsible panels, group behaves as an accordion |
+| `data-lzt-panel` / `data-lzt-panel-group` | which panel a tab reveals, and the group it lives in |
 | `data-lzt-theme-toggle` | theme switch |
 | `data-lzt-toast` / `data-lzt-toast-variant` | show a toast and set its tone |
 
@@ -120,7 +120,7 @@ A live gallery is `demo/index.html` — opens as a file, no server needed.
 ```bash
 npm run build       # tsup → dist/
 npm run typecheck   # tsc --noEmit
-npm test            # vitest — 39 tests over the own controls
+npm test            # vitest — 43 tests over the own controls
 python check.py     # CSS and HTML-demo checks
 ```
 

@@ -75,7 +75,7 @@ npm install github:open-lzt/lzt-ui
 | Иконка | `Icon` (`name` — без префикса `i-`, `size?`) |
 | Формы | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Search` · `Checkbox` `Radio` `Switch` (`label?`) · `Segmented` (`items`, `value`, `onChange`) |
 | Свои контролы | `Select` (`options`, `value`, `onChange`, `name?`) · `Calendar` `DatePicker` `DateTimePicker` (ISO `YYYY-MM-DD`) · `Slider` (`min` `max` `step` `unit?`) · `useAnchored` — позиционер поповеров |
-| Данные | `Block` `BlockHeader` `BlockBody` `BlockFooter` · `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` · `Empty` |
+| Данные | `Block` `BlockHeader` `BlockBody` `BlockFooter` · `Card` `Stat` · `Table` (внутри обычные `thead`/`tbody`/`tr`/`th`/`td`) · `Empty` |
 | Статусы | `Alert` (`tone`) · `Badge` `Tag` `Chip` · `Avatar` (`status?`) · `Tooltip` · `Code` `Quote` |
 | Навигация | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) `MenuSep` · `Pagenav` (`page`, `count`, `onChange`) · `Breadcrumb` · `Topbar` `Sidenav` `SidenavItem` `Logo` |
 | Фидбек | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Dots` `LoaderBar` `Skeleton` |
@@ -93,7 +93,7 @@ npm install github:open-lzt/lzt-ui
 | `data-lzt-tabs` | переключение вкладок |
 | `data-lzt-dropdown` | выпадающее меню |
 | `data-lzt-open` / `data-lzt-close` | открыть и закрыть модалку |
-| `data-lzt-panel` / `data-lzt-panel-group` | раскрывающиеся панели, группа с аккордеоном |
+| `data-lzt-panel` / `data-lzt-panel-group` | какую панель показывает вкладка и в какой группе искать |
 | `data-lzt-theme-toggle` | переключатель темы |
 | `data-lzt-toast` / `data-lzt-toast-variant` | показать тост и его тон |
 
@@ -120,7 +120,7 @@ npm install github:open-lzt/lzt-ui
 ```bash
 npm run build       # tsup → dist/
 npm run typecheck   # tsc --noEmit
-npm test            # vitest — 39 тестов на своих контролах
+npm test            # vitest — 43 теста на своих контролах
 python check.py     # проверка CSS и HTML-демо
 ```
 

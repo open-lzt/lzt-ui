@@ -25,6 +25,11 @@ function trappedNodes(modal: HTMLElement | null): HTMLElement[] {
 
 export function Modal({ open, onClose, title, footer, className, children, ...props }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  // Latched, not a dependency: `onClose={() => setOpen(false)}` is a new function on every parent
+  // render, so keeping it in the dependency list re-ran this effect on every keystroke inside the
+  // dialog — each run pulled focus back onto the container, and typing became impossible.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -37,7 +42,7 @@ export function Modal({ open, onClose, title, footer, className, children, ...pr
         // capture phase, so this listener only ever sees the keys nobody claimed. Asking the
         // document whether ANY portal is open closed nothing while a dropdown stood anywhere on
         // the page — including one in a different modal.
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key !== 'Tab' || !modalRef.current) return;
@@ -59,7 +64,7 @@ export function Modal({ open, onClose, title, footer, className, children, ...pr
       document.removeEventListener('keydown', onKeyDown);
       previouslyFocused?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
