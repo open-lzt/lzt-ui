@@ -1,6 +1,6 @@
 {
   "name": "@open-lzt/ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "LZT design system: a dependency-free CSS kit with dark/light tokens, an SVG icon sprite and typed React components",
   "license": "MIT",
   "keywords": [
