@@ -11,6 +11,20 @@ export interface ModalProps extends Omit<ComponentPropsWithoutRef<'div'>, 'title
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
+/** Popovers (Select, DatePicker) render into document.body, so they sit OUTSIDE the modal subtree
+ * even while visually on top of it. Without them the trap sends Tab back to the modal's first
+ * element and the open list becomes unreachable. */
+const PORTAL_ROOT_SELECTOR = '[data-lzt-portal-root]';
+
+function focusableWithin(root: ParentNode | null): HTMLElement[] {
+  return root ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)) : [];
+}
+
+function trappedNodes(modal: HTMLElement | null): HTMLElement[] {
+  const portals = Array.from(document.querySelectorAll<HTMLElement>(PORTAL_ROOT_SELECTOR));
+  return [...focusableWithin(modal), ...portals.flatMap(focusableWithin)];
+}
+
 export function Modal({ open, onClose, title, footer, className, children, ...props }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -21,11 +35,14 @@ export function Modal({ open, onClose, title, footer, className, children, ...pr
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        // An open popover owns Escape — closing the whole modal instead would throw away the
+        // form behind it because the operator dismissed a dropdown.
+        if (document.querySelector(PORTAL_ROOT_SELECTOR)) return;
         onClose();
         return;
       }
       if (e.key !== 'Tab' || !modalRef.current) return;
-      const focusable = modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      const focusable = trappedNodes(modalRef.current);
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];

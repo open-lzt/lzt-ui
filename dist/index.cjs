@@ -546,6 +546,14 @@ function MenuSep({ className, ...props }) {
 var import_react5 = require("react");
 var import_jsx_runtime8 = require("react/jsx-runtime");
 var FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+var PORTAL_ROOT_SELECTOR = "[data-lzt-portal-root]";
+function focusableWithin(root) {
+  return root ? Array.from(root.querySelectorAll(FOCUSABLE_SELECTOR)) : [];
+}
+function trappedNodes(modal) {
+  const portals = Array.from(document.querySelectorAll(PORTAL_ROOT_SELECTOR));
+  return [...focusableWithin(modal), ...portals.flatMap(focusableWithin)];
+}
 function Modal({ open, onClose, title, footer, className, children, ...props }) {
   const modalRef = (0, import_react5.useRef)(null);
   (0, import_react5.useEffect)(() => {
@@ -554,11 +562,12 @@ function Modal({ open, onClose, title, footer, className, children, ...props }) 
     modalRef.current?.focus();
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
+        if (document.querySelector(PORTAL_ROOT_SELECTOR)) return;
         onClose();
         return;
       }
       if (e.key !== "Tab" || !modalRef.current) return;
-      const focusable = modalRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
+      const focusable = trappedNodes(modalRef.current);
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];

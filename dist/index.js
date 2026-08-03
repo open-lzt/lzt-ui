@@ -457,6 +457,14 @@ function MenuSep({ className, ...props }) {
 import { useEffect as useEffect3, useRef as useRef2 } from "react";
 import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
 var FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+var PORTAL_ROOT_SELECTOR = "[data-lzt-portal-root]";
+function focusableWithin(root) {
+  return root ? Array.from(root.querySelectorAll(FOCUSABLE_SELECTOR)) : [];
+}
+function trappedNodes(modal) {
+  const portals = Array.from(document.querySelectorAll(PORTAL_ROOT_SELECTOR));
+  return [...focusableWithin(modal), ...portals.flatMap(focusableWithin)];
+}
 function Modal({ open, onClose, title, footer, className, children, ...props }) {
   const modalRef = useRef2(null);
   useEffect3(() => {
@@ -465,11 +473,12 @@ function Modal({ open, onClose, title, footer, className, children, ...props }) 
     modalRef.current?.focus();
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
+        if (document.querySelector(PORTAL_ROOT_SELECTOR)) return;
         onClose();
         return;
       }
       if (e.key !== "Tab" || !modalRef.current) return;
-      const focusable = modalRef.current.querySelectorAll(FOCUSABLE_SELECTOR);
+      const focusable = trappedNodes(modalRef.current);
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
