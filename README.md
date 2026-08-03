@@ -33,20 +33,24 @@ export function App() {
 
 ## Установка
 
-**Пакет не опубликован в npm-реестре** — `npm install @open-lzt/ui` вернёт 404. Ставится из git:
-
 ```bash
-npm install github:open-lzt/lzt-ui react react-dom
+npm install @open-lzt/ui react react-dom
 ```
 
 ```json
 {
   "dependencies": {
-    "@open-lzt/ui": "github:open-lzt/lzt-ui",
+    "@open-lzt/ui": "^0.1.0",
     "react": "^18",
     "react-dom": "^18"
   }
 }
+```
+
+Нужна ещё не выпущенная версия с `main` — ставится прямо из git:
+
+```bash
+npm install github:open-lzt/lzt-ui
 ```
 
 `react` и `react-dom` версии 18+ — peer-зависимости, их ставите вы. Собранный `dist/` закоммичен намеренно: npm не запускает `prepare` при установке из tarball, и без него потребитель получил бы пустые экспорты.

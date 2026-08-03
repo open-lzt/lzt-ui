@@ -33,20 +33,24 @@ export function App() {
 
 ## Install
 
-**The package is not published to the npm registry** — `npm install @open-lzt/ui` returns 404. Install from git:
-
 ```bash
-npm install github:open-lzt/lzt-ui react react-dom
+npm install @open-lzt/ui react react-dom
 ```
 
 ```json
 {
   "dependencies": {
-    "@open-lzt/ui": "github:open-lzt/lzt-ui",
+    "@open-lzt/ui": "^0.1.0",
     "react": "^18",
     "react-dom": "^18"
   }
 }
+```
+
+Need an unreleased version from `main` — install straight from git:
+
+```bash
+npm install github:open-lzt/lzt-ui
 ```
 
 `react` and `react-dom` 18+ are peer dependencies — you install them. The built `dist/` is committed on purpose: npm doesn't run `prepare` when installing from a tarball, and without it a consumer would get empty exports.
