@@ -33,9 +33,10 @@ export function Modal({ open, onClose, title, footer, className, children, ...pr
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        // An open popover owns Escape — closing the whole modal instead would throw away the
-        // form behind it because the operator dismissed a dropdown.
-        if (document.querySelector(PORTAL_ROOT_SELECTOR)) return;
+        // No check for an open popover here: a popover that owns Escape stops the event in the
+        // capture phase, so this listener only ever sees the keys nobody claimed. Asking the
+        // document whether ANY portal is open closed nothing while a dropdown stood anywhere on
+        // the page — including one in a different modal.
         onClose();
         return;
       }

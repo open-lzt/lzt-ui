@@ -189,9 +189,20 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select
       if (triggerRef.current?.contains(target) || floatRef.current?.contains(target)) return;
       setOpen(false);
     };
+    // Escape belongs to the open list wherever the focus sits, and it stops here: a surrounding
+    // modal listening on the document must not close the form because a dropdown was dismissed.
+    const onKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      close();
+    };
     document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, [floatRef, open]);
+    document.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown, true);
+    };
+  }, [close, floatRef, open]);
 
   useEffect(() => {
     if (!open) return;

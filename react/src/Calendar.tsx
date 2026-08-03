@@ -12,8 +12,6 @@ export interface CalendarProps extends Omit<ComponentPropsWithoutRef<'div'>, 'on
   locale?: string;
 }
 
-const DAY = 86400000;
-
 export function toIso(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -33,8 +31,10 @@ function startOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 
+/** Via the constructor, not milliseconds: a day that changes DST is 23 or 25 hours long, so a fixed
+ *  86 400 000 ms lands back on the same date — the grid then renders that day twice and drops one. */
 function addDays(date: Date, days: number): Date {
-  return new Date(date.getTime() + days * DAY);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 
 function outOfRange(date: Date, min?: string, max?: string): boolean {
@@ -92,14 +92,27 @@ export function Calendar({
     onChange?.(iso);
   };
 
+  // A cursor outside min/max lands on a disabled button, which refuses focus — the focus falls to
+  // the body and the grid, whose only tabbable cell is the cursor, can no longer be reached by
+  // keyboard at all. So the cursor stops at the edge instead of stepping over it.
+  const clamp = (date: Date): Date => {
+    const lower = fromIso(min);
+    const upper = fromIso(max);
+    if (lower && date < lower) return lower;
+    if (upper && date > upper) return upper;
+    return date;
+  };
+
   const moveCursor = (days_: number) => {
     focusWanted.current = true;
-    setCursor((c) => addDays(c, days_));
+    setCursor((c) => clamp(addDays(c, days_)));
   };
 
   const moveMonth = (months: number) => {
     focusWanted.current = true;
-    setCursor((c) => new Date(c.getFullYear(), c.getMonth() + months, Math.min(c.getDate(), 28)));
+    setCursor((c) =>
+      clamp(new Date(c.getFullYear(), c.getMonth() + months, Math.min(c.getDate(), 28))),
+    );
   };
 
   useEffect(() => {

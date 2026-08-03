@@ -60,12 +60,18 @@ export function DatePicker({
       if (anchorRef.current?.contains(target) || floatRef.current?.contains(target)) return;
       setOpen(false);
     };
-    const onKeyDown = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    // Capture phase + stopPropagation: an open popover owns Escape, and a surrounding modal must
+    // not also see the key and close the whole form behind it.
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      setOpen(false);
+    };
     document.addEventListener('pointerdown', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keydown', onKeyDown, true);
     return () => {
       document.removeEventListener('pointerdown', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keydown', onKeyDown, true);
     };
   }, [anchorRef, floatRef, open]);
 
@@ -136,7 +142,9 @@ export function DateTimePicker({ value, defaultValue, onChange, step = 60, ...re
   const [uncontrolled, setUncontrolled] = useState(defaultValue ?? '');
   const current = value ?? uncontrolled;
   const [date, time] = splitDateTime(current);
-  const timeRef = useRef<HTMLInputElement>(null);
+  // The name belongs to the pair, not to the date half: handed down, the form submitted the date
+  // alone and the time vanished without a word.
+  const { name, ...dateProps } = rest;
 
   const emit = (nextDate: string, nextTime: string) => {
     const joined = nextDate ? `${nextDate}T${nextTime || '00:00'}` : '';
@@ -146,9 +154,8 @@ export function DateTimePicker({ value, defaultValue, onChange, step = 60, ...re
 
   return (
     <div className="lzt-datetime">
-      <DatePicker {...rest} value={date} onChange={(next) => emit(next, time)} />
+      <DatePicker {...dateProps} value={date} onChange={(next) => emit(next, time)} />
       <input
-        ref={timeRef}
         type="time"
         step={step}
         className="lzt-input lzt-datetime__time"
@@ -157,6 +164,7 @@ export function DateTimePicker({ value, defaultValue, onChange, step = 60, ...re
         readOnly={rest.readOnly}
         onChange={(e) => emit(date, e.target.value)}
       />
+      {name ? <input type="hidden" name={name} value={current} readOnly /> : null}
     </div>
   );
 }

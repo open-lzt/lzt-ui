@@ -67,6 +67,18 @@ describe('Calendar', () => {
     expect(cell.classList.contains('is-outside')).toBe(false);
   });
 
+  it('the cursor stops at min instead of landing on a disabled day', async () => {
+    // A cursor on a disabled cell cannot take focus, and the grid's only tabbable cell IS the
+    // cursor — the focus fell to the body and the calendar became unreachable by keyboard.
+    render(<Calendar defaultValue="2026-03-02" min="2026-03-01" />);
+    cursorCell().focus();
+
+    await userEvent.keyboard('{ArrowLeft}{ArrowLeft}{ArrowLeft}');
+
+    expect(cursorCell().textContent).toBe('1');
+    expect(document.activeElement).toBe(cursorCell());
+  });
+
   it('fromIso parses as local time, not UTC', () => {
     const date = fromIso('2026-03-01');
     expect(date?.getDate()).toBe(1);

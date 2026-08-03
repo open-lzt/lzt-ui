@@ -398,9 +398,18 @@ var Select = forwardRef3(function Select2({
       if (triggerRef.current?.contains(target) || floatRef.current?.contains(target)) return;
       setOpen(false);
     };
+    const onKeyDown2 = (e) => {
+      if (e.key !== "Escape") return;
+      e.stopPropagation();
+      close();
+    };
     document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [floatRef, open]);
+    document.addEventListener("keydown", onKeyDown2, true);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown2, true);
+    };
+  }, [close, floatRef, open]);
   useEffect3(() => {
     if (!open) return;
     const node = floatRef.current?.querySelector('[data-active="true"]');
@@ -472,7 +481,6 @@ var Select = forwardRef3(function Select2({
 // react/src/Calendar.tsx
 import { useEffect as useEffect4, useMemo, useRef as useRef3, useState as useState4 } from "react";
 import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
-var DAY = 864e5;
 function toIso(date) {
   const pad = (n) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -489,7 +497,7 @@ function startOfMonth(date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 }
 function addDays(date, days) {
-  return new Date(date.getTime() + days * DAY);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 function outOfRange(date, min, max) {
   const iso = toIso(date);
@@ -537,13 +545,22 @@ function Calendar({
     if (value === void 0) setUncontrolled(iso);
     onChange?.(iso);
   };
+  const clamp = (date) => {
+    const lower = fromIso(min);
+    const upper = fromIso(max);
+    if (lower && date < lower) return lower;
+    if (upper && date > upper) return upper;
+    return date;
+  };
   const moveCursor = (days_) => {
     focusWanted.current = true;
-    setCursor((c) => addDays(c, days_));
+    setCursor((c) => clamp(addDays(c, days_)));
   };
   const moveMonth = (months) => {
     focusWanted.current = true;
-    setCursor((c) => new Date(c.getFullYear(), c.getMonth() + months, Math.min(c.getDate(), 28)));
+    setCursor(
+      (c) => clamp(new Date(c.getFullYear(), c.getMonth() + months, Math.min(c.getDate(), 28)))
+    );
   };
   useEffect4(() => {
     if (!focusWanted.current) return;
@@ -633,7 +650,7 @@ function Calendar({
 }
 
 // react/src/DatePicker.tsx
-import { useCallback as useCallback4, useEffect as useEffect5, useId as useId2, useRef as useRef4, useState as useState5 } from "react";
+import { useCallback as useCallback4, useEffect as useEffect5, useId as useId2, useState as useState5 } from "react";
 import { createPortal as createPortal2 } from "react-dom";
 import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
 function splitDateTime(value) {
@@ -682,12 +699,16 @@ function DatePicker({
       if (anchorRef.current?.contains(target) || floatRef.current?.contains(target)) return;
       setOpen(false);
     };
-    const onKeyDown = (e) => e.key === "Escape" && setOpen(false);
+    const onKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      e.stopPropagation();
+      setOpen(false);
+    };
     document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown, true);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keydown", onKeyDown, true);
     };
   }, [anchorRef, floatRef, open]);
   const text = typing ?? (current ? current.split("-").reverse().join(".") : "");
@@ -756,18 +777,17 @@ function DateTimePicker({ value, defaultValue, onChange, step = 60, ...rest }) {
   const [uncontrolled, setUncontrolled] = useState5(defaultValue ?? "");
   const current = value ?? uncontrolled;
   const [date, time] = splitDateTime(current);
-  const timeRef = useRef4(null);
+  const { name, ...dateProps } = rest;
   const emit = (nextDate, nextTime) => {
     const joined = nextDate ? `${nextDate}T${nextTime || "00:00"}` : "";
     if (value === void 0) setUncontrolled(joined);
     onChange?.(joined);
   };
   return /* @__PURE__ */ jsxs4("div", { className: "lzt-datetime", children: [
-    /* @__PURE__ */ jsx8(DatePicker, { ...rest, value: date, onChange: (next) => emit(next, time) }),
+    /* @__PURE__ */ jsx8(DatePicker, { ...dateProps, value: date, onChange: (next) => emit(next, time) }),
     /* @__PURE__ */ jsx8(
       "input",
       {
-        ref: timeRef,
         type: "time",
         step,
         className: "lzt-input lzt-datetime__time",
@@ -776,7 +796,8 @@ function DateTimePicker({ value, defaultValue, onChange, step = 60, ...rest }) {
         readOnly: rest.readOnly,
         onChange: (e) => emit(date, e.target.value)
       }
-    )
+    ),
+    name ? /* @__PURE__ */ jsx8("input", { type: "hidden", name, value: current, readOnly: true }) : null
   ] });
 }
 
@@ -1177,7 +1198,6 @@ function Modal({ open, onClose, title, footer, className, children, ...props }) 
     modalRef.current?.focus();
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
-        if (document.querySelector(PORTAL_ROOT_SELECTOR)) return;
         onClose();
         return;
       }

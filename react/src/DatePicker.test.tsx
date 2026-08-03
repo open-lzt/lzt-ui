@@ -66,6 +66,15 @@ describe('DateTimePicker', () => {
     expect(calls[calls.length - 1]?.[0]).toMatch(/^\d{4}-\d{2}-\d{2}T00:00$/);
   });
 
+  it('submits date AND time under its name', () => {
+    // The name used to be handed down to the date half, whose hidden input carries the date alone —
+    // an uncontrolled form posted the day and dropped the time without a word.
+    render(<DateTimePicker name="starts_at" defaultValue="2026-02-01T14:30" />);
+    expect(document.querySelector<HTMLInputElement>('input[name="starts_at"]')?.value).toBe(
+      '2026-02-01T14:30',
+    );
+  });
+
   it('changing the time keeps the already-picked date', async () => {
     const onChange = vi.fn();
     render(<DateTimePicker defaultValue="2026-02-01T00:00" onChange={onChange} />);
