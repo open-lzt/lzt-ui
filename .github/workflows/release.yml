@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # Mints the short-lived OIDC token npm trusted publishing exchanges for
-      # publish rights — without it npm falls back to asking for a 2FA code.
       id-token: write
     steps:
       - uses: actions/checkout@v4
@@ -24,14 +22,11 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
-      # Trusted publishing needs npm 11.5.1+; the one bundled with node 22 is older.
       - run: npm install -g npm@latest
 
       - run: npm install --no-audit --no-fund
       - run: npm run typecheck
 
-      # The GitHub release tag is the single source of truth for the version;
-      # package.json in the repo is left alone and only patched here, in CI.
       - name: set version from the release tag
         run: |
           version="${{ github.event.inputs.version || github.event.release.tag_name }}"
