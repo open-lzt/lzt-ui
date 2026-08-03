@@ -40,7 +40,7 @@ npm install @open-lzt/ui react react-dom
 ```json
 {
   "dependencies": {
-    "@open-lzt/ui": "^0.1.0",
+    "@open-lzt/ui": "^0.2.0",
     "react": "^18",
     "react-dom": "^18"
   }
@@ -73,13 +73,14 @@ npm install github:open-lzt/lzt-ui
 | Каркас | `Shell` `Container` `Main` `Stack` `Grid` `Spacer` `Divider` · `Row` (`between?`, `wrap?`) |
 | Кнопки | `Button` (`variant`: `default` \| `primary` \| `danger` \| `outline` \| `ghost` \| `gradient`; `size`: `sm` \| `md` \| `lg`; `icon?` `block?` `loading?`) · `ButtonGroup` |
 | Иконка | `Icon` (`name` — без префикса `i-`, `size?`) |
-| Формы | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Search` · `Checkbox` `Radio` `Switch` (`label?`) |
+| Формы | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Search` · `Checkbox` `Radio` `Switch` (`label?`) · `Segmented` (`items`, `value`, `onChange`) |
 | Свои контролы | `Select` (`options`, `value`, `onChange`, `name?`) · `Calendar` `DatePicker` `DateTimePicker` (ISO `YYYY-MM-DD`) · `Slider` (`min` `max` `step` `unit?`) · `useAnchored` — позиционер поповеров |
-| Данные | `Block` `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` |
-| Навигация | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) · `Pagenav` (`page`, `count`, `onChange`) |
-| Фидбек | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Skeleton` |
+| Данные | `Block` `BlockHeader` `BlockBody` `BlockFooter` · `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` · `Empty` |
+| Статусы | `Alert` (`tone`) · `Badge` `Tag` `Chip` · `Avatar` (`status?`) · `Tooltip` · `Code` `Quote` |
+| Навигация | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) `MenuSep` · `Pagenav` (`page`, `count`, `onChange`) · `Breadcrumb` · `Topbar` `Sidenav` `SidenavItem` `Logo` |
+| Фидбек | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Dots` `LoaderBar` `Skeleton` |
 | Тосты | `ToastProvider` · `useToast()` → `toast(msg, { tone })` |
-| Форум | `Thread` (`unread?`) `ThreadMain` `ThreadTitle` `Post` `PostContent` `Spoiler` `Reactions` `Reaction` |
+| Форум | `Thread` (`unread?`) `ThreadMain` `ThreadTitle` `ThreadMeta` `ThreadStats` `ThreadStat` · `Post` `PostHead` `PostUser` `PostName` `PostRole` `PostUserStats` `PostBody` `PostContent` `PostFoot` · `Spoiler` `Reactions` `Reaction` |
 
 Тема: `ThemeProvider` (`defaultTheme` по умолчанию `dark`), хук `useTheme()` → `{ theme, setTheme, toggle }`, готовая кнопка `ThemeToggle`. Выбор запоминается, светлая включается атрибутом `data-theme="light"` на `<html>`.
 
@@ -119,12 +120,15 @@ npm install github:open-lzt/lzt-ui
 ```bash
 npm run build       # tsup → dist/
 npm run typecheck   # tsc --noEmit
+npm test            # vitest — 39 тестов на своих контролах
 python check.py     # проверка CSS и HTML-демо
 ```
 
 `check.py` сверяет: баланс блоков в CSS, что каждый использованный класс `lzt-*` объявлен, что каждый `var()` резолвится, что каждый `<use href="#i-*">` есть в спрайте, что цели модалок существуют и что в разметке нет отступов вне шкалы.
 
-Юнит-тестов, линтера JS и CI в репозитории нет — `check.py` и `typecheck` и есть весь гейт.
+CI на каждый пуш и PR гоняет `typecheck`, тесты и проверку, что `dist/` собрался. Линтера JS в репозитории нет — `check.py` закрывает CSS и разметку, тесты закрывают поведение своих контролов.
+
+Релиз: создать GitHub Release с тегом `vX.Y.Z` — воркфлоу сам подставит версию из тега и опубликует в npm с provenance. Версию в `package.json` руками не двигают, источник правды — тег.
 
 Шрифты не приложены: базовое начертание — системное, пока вы не подключите своё.
 

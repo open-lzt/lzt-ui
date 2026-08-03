@@ -40,7 +40,7 @@ npm install @open-lzt/ui react react-dom
 ```json
 {
   "dependencies": {
-    "@open-lzt/ui": "^0.1.0",
+    "@open-lzt/ui": "^0.2.0",
     "react": "^18",
     "react-dom": "^18"
   }
@@ -73,12 +73,14 @@ The sprite is injected rather than served as an external file for a reason: `<us
 | Layout | `Shell` `Container` `Main` `Stack` `Grid` `Spacer` `Divider` · `Row` (`between?`, `wrap?`) |
 | Buttons | `Button` (`variant`: `default` \| `primary` \| `danger` \| `outline` \| `ghost` \| `gradient`; `size`: `sm` \| `md` \| `lg`; `icon?` `block?` `loading?`) · `ButtonGroup` |
 | Icon | `Icon` (`name` — without the `i-` prefix, `size?`) |
-| Forms | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Select` `Search` · `Checkbox` `Switch` (`label?`) |
-| Data | `Block` `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` |
-| Navigation | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) · `Pagenav` (`page`, `count`, `onChange`) |
-| Feedback | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Skeleton` |
+| Forms | `Field` `Label` · `Hint` (`error?`) · `Input` (`size?`, `invalid?`) `Textarea` `Search` · `Checkbox` `Radio` `Switch` (`label?`) · `Segmented` (`items`, `value`, `onChange`) |
+| Own controls | `Select` (`options`, `value`, `onChange`, `name?`) · `Calendar` `DatePicker` `DateTimePicker` (ISO `YYYY-MM-DD`) · `Slider` (`min` `max` `step` `unit?`) · `useAnchored` — the popover positioner |
+| Data | `Block` `BlockHeader` `BlockBody` `BlockFooter` · `Card` `Stat` · `Table` `Thead` `Tbody` `Tr` `Th` `Td` · `Empty` |
+| Status | `Alert` (`tone`) · `Badge` `Tag` `Chip` · `Avatar` (`status?`) · `Tooltip` · `Code` `Quote` |
+| Navigation | `Tabs` (`items`) · `Dropdown` (`trigger`) · `Menu` `MenuItem` (`danger?`) `MenuSep` · `Pagenav` (`page`, `count`, `onChange`) · `Breadcrumb` · `Topbar` `Sidenav` `SidenavItem` `Logo` |
+| Feedback | `Modal` (`open`, `onClose`, `title?`) · `Progress` `Spinner` `Dots` `LoaderBar` `Skeleton` |
 | Toasts | `ToastProvider` · `useToast()` → `toast(msg, { tone })` |
-| Forum | `Thread` (`unread?`) `ThreadMain` `ThreadTitle` `Post` `PostContent` `Spoiler` `Reactions` `Reaction` |
+| Forum | `Thread` (`unread?`) `ThreadMain` `ThreadTitle` `ThreadMeta` `ThreadStats` `ThreadStat` · `Post` `PostHead` `PostUser` `PostName` `PostRole` `PostUserStats` `PostBody` `PostContent` `PostFoot` · `Spoiler` `Reactions` `Reaction` |
 
 Theme: `ThemeProvider` (`defaultTheme` defaults to `dark`), the `useTheme()` hook → `{ theme, setTheme, toggle }`, and a ready `ThemeToggle` button. The choice is remembered; light mode is `data-theme="light"` on `<html>`.
 
@@ -118,12 +120,15 @@ A live gallery is `demo/index.html` — opens as a file, no server needed.
 ```bash
 npm run build       # tsup → dist/
 npm run typecheck   # tsc --noEmit
+npm test            # vitest — 39 tests over the own controls
 python check.py     # CSS and HTML-demo checks
 ```
 
 `check.py` verifies: CSS blocks balance, every `lzt-*` class used in markup is defined, every `var()` resolves, every `<use href="#i-*">` exists in the sprite, modal targets resolve, and no off-scale spacing is hand-rolled.
 
-There are no unit tests, no JS linter and no CI in this repo — `check.py` and `typecheck` are the whole gate.
+CI runs `typecheck`, the tests and a build-output assertion on every push and pull request. There is no JS linter — `check.py` covers CSS and markup, the tests cover the behaviour of the own controls.
+
+Releasing: create a GitHub Release tagged `vX.Y.Z` — the workflow takes the version from the tag and publishes to npm with provenance. The version in `package.json` is never bumped by hand; the tag is the source of truth.
 
 Fonts are not bundled: the base typeface is the system one until you wire up your own.
 
